@@ -1,0 +1,72 @@
+-- Active: 1687100659996@@127.0.0.1@3306@carbonemissiondb
+DROP SCHEMA IF EXISTS CarbonEmissionDB;
+CREATE SCHEMA IF NOT EXISTS CarbonEmissionDB;
+USE CarbonEmissionDB;
+
+CREATE TABLE Users (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    SecurityCode VARCHAR(255) ,
+    Confirmed boolean DEFAULT FALSE,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE UserSessions (
+    SessionID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    LoginTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    LogoutTime TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE TwoFactorAuth (
+    AuthID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    OTP VARCHAR(6),
+    ExpiryTime TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE HouseholdUsage (
+    UsageID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    PropaneUsage DECIMAL(10,2),
+    NaturalGasUsage DECIMAL(10,2),
+    ElectricityUsage DECIMAL(10,2),
+    FuelOilUsage DECIMAL(10,2),
+    MonthYear DATE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Vehicles (
+    VehicleID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    NumberOfVehicles INT,
+    AverageMilesDriven DECIMAL(10,2),
+    AverageMileage DECIMAL(10,2),
+    MonthYear DATE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE VehicleDetails (
+    VehicleDetailID INT AUTO_INCREMENT PRIMARY KEY,
+    VehicleID INT,
+    MilesDriven DECIMAL(10,2),
+    Mileage DECIMAL(10,2),
+    MonthYear DATE,
+    FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID)
+);
+
+CREATE TABLE Waste (
+    WasteID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    AluminumSteelCans DECIMAL(10,2),
+    Plastic DECIMAL(10,2),
+    Glass DECIMAL(10,2),
+    Newspaper DECIMAL(10,2),
+    Magazines DECIMAL(10,2),
+    MonthYear DATE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);

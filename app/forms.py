@@ -8,21 +8,16 @@ from wtforms.validators import Length, EqualTo, Email, DataRequired,  Regexp, Nu
 
 # user registration form
 
-class RegisterForm(FlaskForm):
-    # all the fields in the form
-    # regex for password validation
-    exp = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+])[A-Za-z\d@$!%*#?&+]{4,}$"
-    username = StringField(label='User Name:', validators=[
-                           Length(min=2, max=30), DataRequired()])
-    email_address = StringField(label='Email Address:', validators=[
-                                Email(), DataRequired()])
-    password1 = PasswordField(label='Password:', validators=[
+class RegisterationForm(FlaskForm):
+    exp = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-])[A-Za-z\d@$!%*#?&+-]{4,}$"
+    username = StringField(validators=[Length(min=2, max=30), DataRequired()])
+    email_address = StringField(validators=[Email(), DataRequired()])
+    password = PasswordField(validators=[
                               Regexp(re.compile(exp),
                                      message='Password must contain at least one letter, one number and one special character'),
                               Length(min=4,  message='Password must have a minimum length of 4'), DataRequired()])
-    password2 = PasswordField(label='Confirm Password:', validators=[
-                              EqualTo('password1', message="Passwords do not match."), DataRequired()])
-    submit = SubmitField(label='Create Account')
+    confirmPassword = PasswordField(validators=[
+                              EqualTo('password', message="Passwords do not match."), DataRequired()])
 
 # user login form
 
@@ -31,7 +26,6 @@ class LoginForm(FlaskForm):
                            validators=[DataRequired()])
     password = PasswordField(
         label='Enter Your Password:', validators=[DataRequired()])
-    register=SubmitField(label='Register')
     submit = SubmitField(label='Sign in')
 
 # Car Info Form
