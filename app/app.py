@@ -1,11 +1,11 @@
 from datetime import datetime
 import secrets
-from flask import Flask, flash, render_template, request, redirect, url_for, session
+from flask import Flask, flash, render_template, request, redirect, url_for, session, current_app
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import RegisterationForm
-from flask_login import UserMixin
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 # Initialization and Configuration
 
@@ -16,6 +16,11 @@ app.config.from_pyfile('config.py')
 
 mail = Mail(app)
 db = SQLAlchemy(app)
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+login_manager.login_message = 'Please login to access this page.'
 
 
 class Users(db.Model, UserMixin):
@@ -107,6 +112,18 @@ wastes = db.relationship('Waste', backref='Users')
 
 # Page Routing
 
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
+@app.before_request
+def before_request():
+    if not getattr(current_app, "user_loaded", False) and "user" in session:
+        email = session["user"]
+        user = Users.query.filter_by(email=email).first()
+        if user:
+            login_user(user)
+            current_app.user_loaded = True
 
 @app.route("/", methods=['GET', 'POST'])
 def home_page():
@@ -122,22 +139,12 @@ def login():
         password = str(password)
         user = Users.query.filter_by(email=email).first()
         if user and check_password_hash(user.PasswordHash, password):
-            # Send 2FA email
-            security_code = secrets.token_hex(6)
-            user.SecurityCode = security_code
-            db.session.commit()
-            msg = Message('2FA Security Code',
-                          sender='your-email@example.com', recipients=[email])
-            msg.body = f'Your 2FA security code is: {security_code}'
-            mail.send(msg)
             session['email'] = email
-            flash('Please enter the 2FA code sent to your email', category='success')
             return redirect(url_for('verify_2fa'))
 
         else:
             flash('Login Unsuccessful. Please check email and password',
                   category='danger')
-            return render_template('login-signup-page.html', mode="Login", form=form)
 
     return render_template('login-signup-page.html', mode="Login", form=form)
 
@@ -159,15 +166,9 @@ def register():
                              email=email_address, PasswordHash=password, CreatedAt=timestamp, Confirmed=False)
                 db.session.add(user)
                 db.session.commit()
-                # Send confirmation email
-                security_code = secrets.token_hex(6)
-                user.SecurityCode = security_code
-                db.session.commit()
-                msg = Message(
-                    'Confirm your email', sender='your-email@example.com', recipients=[email_address])
-                msg.body = f'Your confirmation code is: {security_code}'
-                mail.send(msg)
-                return render_template('confirm_email.html', email=email_address)
+                session['newRegistrationEmail'] = email_address
+                
+                return redirect(url_for('confirm_email'))
             else:
                 flash('Passwords do not match', category='danger')
 
@@ -182,12 +183,10 @@ def register():
 
 @app.route('/confirm_email', methods=['GET', 'POST'])
 def confirm_email():
+    email = session['newRegistrationEmail']
+    user = Users.query.filter_by(email=email).first()
     if request.method == 'POST':
-        email = request.form.get('email')
-        security_code = request.form.get('security_code')
-        user = Users.query.filter_by(email=email).first()
-        print(user)
-
+        security_code = request.form.get('1') + request.form.get('2') + request.form.get('3') + request.form.get('4') + request.form.get('5') +request.form.get('6')
         if user and user.SecurityCode == security_code:
             db.session.commit()
             user.Confirmed = True
@@ -196,8 +195,42 @@ def confirm_email():
             return redirect(url_for('login'))
         else:
             flash('Invalid email or security code', category='error')
+    else:
+        security_code = secrets.token_hex(3)
+        user.SecurityCode = security_code
+        db.session.commit()
+        msg = Message(
+            'Confirm your email', sender='your-email@example.com', recipients=[email])
+        msg.body = f'Your confirmation code is: {security_code}'
+        mail.send(msg)
 
-    return render_template('confirm_email.html')
+    return render_template('confirm_email.html', email=email)
+
+@app.route('/verify_2fa', methods=['GET', 'POST'])
+def verify_2fa():
+    email = session['email']
+    user = Users.query.filter_by(email=email).first()
+    
+    if request.method == 'POST':
+        security_code = request.form.get('1') + request.form.get('2') + request.form.get('3') + request.form.get('4') + request.form.get('5') +request.form.get('6')
+
+        if user and user.SecurityCode == security_code:
+            session['logged_in'] = True
+            login_user(user)
+            session["user"] = user.email
+
+            return redirect(url_for('number_survey'))
+        
+    else:
+        security_code = secrets.token_hex(3)
+        user.SecurityCode = security_code
+        db.session.commit()
+        msg = Message('2FA Security Code',
+                        sender='your-email@example.com', recipients=[email])
+        msg.body = f'Your 2FA security code is: {security_code}'
+        mail.send(msg)
+
+    return render_template('verify_2fa.html', email=email)
 
 # Error Routing
 
@@ -212,7 +245,6 @@ def invalid_route(e):
     return render_template('page-500.html')
 
 # Run Application
-
 
 def exec_app():
     if __name__ == "app.app":

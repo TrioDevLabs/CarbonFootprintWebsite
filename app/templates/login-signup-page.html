@@ -275,7 +275,7 @@
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %} {% if
             messages %} {% for category, message in messages %}
-            <div id="myAlert" class="alert alert-warning alert-dismissible fade show text-center">
+            <div id="myAlert" class="alert alert-{{category}} alert-dismissible fade show text-center">
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
                 {{message}}
              </div>
