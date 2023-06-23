@@ -127,6 +127,7 @@ def before_request():
 
 @app.route("/", methods=['GET', 'POST'])
 def home_page():
+    print(current_user)
     return render_template('index.html')
 
 
@@ -219,7 +220,7 @@ def verify_2fa():
             login_user(user)
             session["user"] = user.email
 
-            return redirect(url_for('number_survey'))
+            return render_template('index.html')
         
     else:
         security_code = secrets.token_hex(3)
@@ -232,6 +233,21 @@ def verify_2fa():
 
     return render_template('verify_2fa.html', email=email)
 
+@app.route('/logout')
+def logout():
+    if "user" in session:
+        session.pop("user", None)
+        logout_user()
+        flash('You have been logged out', category='success')
+        return render_template('index.html')
+
+    else:
+        flash('You are not logged in', category='success')
+        return redirect(url_for('login'))
+    
+@app.route('/about')
+def about():
+    return render_template('about.html')
 # Error Routing
 
 
