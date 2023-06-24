@@ -1,4 +1,7 @@
 -- Active: 1687100659996@@127.0.0.1@3306@carbonemissiondb
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost' WITH GRANT OPTION;
+
 DROP SCHEMA IF EXISTS CarbonEmissionDB;
 CREATE SCHEMA IF NOT EXISTS CarbonEmissionDB;
 USE CarbonEmissionDB;
