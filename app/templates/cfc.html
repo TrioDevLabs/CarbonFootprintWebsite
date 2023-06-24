@@ -1,10 +1,359 @@
 {% extends './layouts/base.html'%}
-{% block title %}About{% endblock %}
+{% block title %}CFC{% endblock %}
 
 {% block head %}
 {{ super() }}
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="https://fonts.cdnfonts.com/css/muli" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css"
+    integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css"
+    integrity="sha512-rRQtF4V2wtAvXsou4iUAs2kXHi3Lj9NE7xJR77DE7GHsxgY9RTWy93dzMXgDIG8ToiRTD45VsDNdTiUagOFeZA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="../static/css/cfc.css">
 {% endblock %}
 
 {% block content %}
+<div class="page-content">
+    <div class="wizard-v2-content">
 
+        <div class="wizard-form">
+            <div class="wizard-header">
+                <h3>CARBON FOOTPRINT CALCULATOR</h3>
+                <p>Carbon Footprint Calculator For Individuals And Households</p>
+            </div>
+            <form class="form-register" action="#" method="post">
+                <div id="form-total">
+                    <!-- SECTION 1 -->
+                    <h2>Home Energy</h2>
+                    <section>
+                        <!--  -->
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#currHome" aria-expanded="true" aria-controls="currHome">Current Emissions From
+                            Home Energy</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="currHome">
+                                <div class="inner">
+                                    <div class="form-row">
+                                        <h5>Heating</h5>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card card-body">
+                                                What is your household's primary heating source?
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <select name="type" id="type" class="form-control">
+                                                <option value="" disabled selected>Choose A Resource</option>
+                                                <option value="Natural Gas">Natural Gas</option>
+                                                <option value="Electricity">Electricity</option>
+                                                <option value="Fuel Oil">Fuel Oil</option>
+                                                <option value="Propane">Propane</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <h5>Utility</h5>
+                                    </div>
+                                    <div class="form-row">
+                                        <p><em>Enter your average monthly bill or other data for each source of energy
+                                                your household uses</em></p>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card card-body">
+                                                Natural Gas
+                                                <input type="number" name="" id="">
+                                                <select name="type" id="type" class="form-control">
+                                                    <option value="Thousand Cubic Feet" selected>Thousand Cubic Feet
+                                                    </option>
+                                                    <option value="Therm">Therm</option>
+                                                    <option value="Dollars">Dollars</option>
+                                                </select>
+                                                <div class="output">
+                                                    0 lbs
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <div class="card card-body">
+                                                Electricity
+                                                <input type="number" name="" id="">
+                                                <select name="type" id="type" class="form-control">
+                                                    <option value="kWh">kWh</option>
+                                                    <option value="Dollars">Dollars</option>
+                                                </select>
+                                                <div class="output">
+                                                    0 lbs
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card card-body">
+                                                Fuel Oil
+                                                <input type="number" name="" id="">
+                                                <select name="type" id="type" class="form-control">
+                                                    <option value="Gallons">Gallons</option>
+                                                    <option value="Dollars">Dollars</option>
+                                                </select>
+                                                <div class="output">
+                                                    0 lbs
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <div class="card card-body">
+                                                Propane
+                                                <input type="number" name="" id="">
+                                                <select name="type" id="type" class="form-control">
+                                                    <option value="Gallons">Gallons</option>
+                                                    <option value="Dollars">Dollars</option>
+                                                </select>
+                                                <div class="output">
+                                                    0 lbs
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#reduceHousehold" aria-expanded="true" aria-controls="reduceHousehold">Reduce
+                            Your Emissions</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="reduceHousehold">
+                                <div class="card card-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                    richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes
+                                    anderson cred nesciunt sapiente ea proident.
+                                </div>
+                            </div>
+                        </div>
+                        <!--  -->
+
+                    </section>
+                    <!-- SECTION 2 -->
+                    <h2>Transportation</h2>
+                    <section>
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#currTransportation" aria-expanded="true"
+                            aria-controls="currTransportation">Current Emissions From Transportation</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="currTransportation">
+                                <div class="inner">
+                                    <div class="form-row">
+                                        <h5>Vehicles</h5>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card-body">
+                                                How many vehicles does your household have?
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <select name="vehicleNum" id="vehicleNum" class="form-control">
+                                                <option value="0" selected>0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <h5>Current Maintenance</h5>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card-body">
+                                                Do you perform regular maintenance?
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <select name="type" id="type" class="form-control">
+                                                <option value="Choose One" disabled selected>Choose One</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="vehiclePanel" class="inner">
+
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#reduceTransportation" aria-expanded="true"
+                            aria-controls="reduceTransportation">Reduce Your Emissions</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="reduceTransportation">
+                                <div class="card card-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                    richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes
+                                    anderson cred nesciunt sapiente ea proident.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- SECTION 3 -->
+                    <h2>Waste</h2>
+                    <section>
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#currWaste" aria-expanded="true" aria-controls="currWaste">Current Emissions
+                            From Waste</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="currWaste">
+                                <div class="inner">
+                                    <div class="form-row">
+                                        <h5>Waste</h5>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card-body cap">
+                                                <strong>Average waste emissions:</strong>
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <div class="card-body waste">
+                                                <strong>1383 lbs</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <p><em>Which of the following products do you currently recycle in your
+                                                household?</em></p>
+                                    </div>
+                                    <div class="form-row">
+                                        <label><input type="checkbox" name="aluminium" value="aluminium"> aluminium and
+                                            steel cans</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <label><input type="checkbox" name="plastic" value="plastic"> plastic</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <label><input type="checkbox" name="glass" value="glass">
+                                            glass</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <label><input type="checkbox" name="newspaper" value="newspaper">
+                                            newspaper</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <label><input type="checkbox" name="magazines" value="magazines">
+                                            magazines</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-holder">
+                                            <div class="card-body cap">
+                                                <strong> Your total waste emissions after recycling:</strong>
+                                            </div>
+                                        </div>
+                                        <div class="form-holder">
+                                            <div class="card-body waste">
+                                                <strong>1383 lbs</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary headerbtn" type="button" data-toggle="collapse"
+                            data-target="#reduceWaste" aria-expanded="true" aria-controls="reduceWaste">Reduce Your
+                            Emissions</button>
+                        <div class="row">
+                            <div class="collapse multi-collapse" id="reduceWaste">
+                                <div class="card card-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                    richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes
+                                    anderson cred nesciunt sapiente ea proident.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </form>
+        </div>
+        <div class="total">
+            <h4>Your Carbon Footprint</h4>
+            <p>Annual CO2 emissions (lbs.) </p>
+            <hr>
+            <h4>Your Current Total:</h4>
+            <h4 class="amount">18,542</h4>
+            <h4>New Total After Your Planned Actions:</h4>
+            <h4 class="amount">18,542</h4>
+            <h4>U.S. Average*:</h4>
+            <h4 class="amount">26,793</h4>
+        </div>
+    </div>
+</div>
+<!--  -->
+
+<!--  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+    integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.js"
+    integrity="sha512-gH0SqyjTN7WJAtki1UvqOkhWi3WsF9LY05BMwdcSq6QdFDXrXeXy0q8iP0YmBXCqo7OnSgdIPrC5Vqn8/KRu/Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"
+    integrity="sha512-57oZ/vW8ANMjR/KQ6Be9v/+/h6bq9/l3f0Oc7vn6qMqyhvPd1cvKBRWWpzu0QoneImqr2SkmO4MSqU+RpHom3Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../static/js/cfc.js"></script>
+<script>
+    $(document).ready(function () {
+        var previousValue = 0;
+        var newValue = 0;
+        $('#vehicleNum').change(function () {
+            newValue = parseInt($(this).val());
+
+            if (newValue < previousValue) {
+                var divsToRemove = previousValue - newValue;
+                for (var i = 0; i < divsToRemove * 4; i++) {
+                    $('#vehiclePanel').children().last().remove();
+                }
+            }
+
+            if (newValue > previousValue) {
+                var divsToAdd = newValue - previousValue;
+                var start = previousValue + 1;
+                for (var i = start; i <= newValue; i++) {
+                    var vehicleDiv = $('<div>').addClass('form-row');
+                    var vehicleTitle = $('<h5>').text('Vehicle ' + i);
+                    var milesFormRow = $('<div>').addClass('form-row');
+                    var milesFormHolder = $('<div>').addClass('form-holder');
+                    var milesCardBody = $('<div>').addClass('card-body').text('On average, miles you drive:');
+                    var milesInputHolder = $('<div>').addClass('form-holder');
+                    var milesInput = $('<input>').addClass('miles').attr('type', 'number').attr('name', 'miles' + i).attr('id', 'miles' + i);
+                    var milesInputLabel = $('<span>').text(' Miles Per Year');
+                    var mileageFormRow = $('<div>').addClass('form-row');
+                    var mileageFormHolder = $('<div>').addClass('form-holder');
+                    var mileageCardBody = $('<div>').addClass('card-body').text('Average Gas Mileage:');
+                    var mileageInputHolder = $('<div>').addClass('form-holder');
+                    var mileageInput = $('<input>').addClass('miles').attr('type', 'number').attr('name', 'mileage' + i).attr('id', 'mileage' + i);
+                    var mileageInputLabel = $('<span>').text(' Miles Per Gallon');
+
+                    // Append the elements to the #vehiclePanel if it's visible
+                    if ($('#vehiclePanel').is(':visible')) {
+                        $('#vehiclePanel').append(
+                            $('<hr>'),
+                            vehicleDiv.append(vehicleTitle),
+                            milesFormRow.append(milesFormHolder.append(milesCardBody), milesInputHolder.append(milesInput, milesInputLabel)),
+                            mileageFormRow.append(mileageFormHolder.append(mileageCardBody), mileageInputHolder.append(mileageInput, mileageInputLabel))
+                        );
+                    }
+                }
+            }
+            previousValue = parseInt($(this).val());
+        });
+    });
+
+</script>
 {% endblock %}
