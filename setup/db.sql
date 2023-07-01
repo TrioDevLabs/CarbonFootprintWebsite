@@ -2,7 +2,6 @@
 CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost' WITH GRANT OPTION;
 
-
 DROP SCHEMA IF EXISTS CarbonEmissionDB;
 CREATE SCHEMA IF NOT EXISTS CarbonEmissionDB;
 USE CarbonEmissionDB;
@@ -46,7 +45,7 @@ CREATE TABLE HouseholdUsage (
 );
 
 CREATE TABLE Vehicles (
-    VehicleID INT AUTO_INCREMENT PRIMARY KEY,
+    EntryID INT AUTO_INCREMENT PRIMARY KEY,
     UserID INT,
     NumberOfVehicles INT,
     AverageMilesDriven DECIMAL(10,2),
@@ -57,4 +56,15 @@ CREATE TABLE Vehicles (
 );
 
 
-
+CREATE TABLE Waste (
+    Entry_ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    AluminumSteelCans bool,
+    Plastic bool,
+    Glass bool,
+    Newspaper bool,
+    Magazines bool,
+    MonthYear DATE,
+    Emissions float,
+    FOREIGN KEY (UserID) REFERENCES users(UserID)
+);

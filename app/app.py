@@ -82,7 +82,7 @@ class HouseholdUsage(db.Model):
 
 class Vehicles(db.Model):
     __tablename__ = 'vehicles'
-    VehicleID = db.Column(db.Integer, primary_key=True)
+    EntryID = db.Column(db.Integer, primary_key=True)
     UserID = db.Column(db.Integer)
     NumberOfVehicles = db.Column(db.Integer)
     AverageMilesDriven = db.Column(db.Float)
@@ -91,25 +91,17 @@ class Vehicles(db.Model):
     MonthYear = db.Column(db.Date)
 
 
-class VehicleDetails(db.Model):
-    __tablename__ = 'vehiclesdetails'
-    VehicleDetailID = db.Column(db.Integer, primary_key=True)
-    VehicleID = db.Column(db.Integer )
-    MilesDriven = db.Column(db.Float)
-    Mileage = db.Column(db.Float)
-    MonthYear = db.Column(db.Date)
-
-
 class Waste(db.Model):
     __tablename__ = 'waste'
-    WasteID = db.Column(db.Integer, primary_key=True)
+    Entry_ID = db.Column(db.Integer, primary_key=True)
     UserID = db.Column(db.Integer)
-    AluminumSteelCans = db.Column(db.Float)
-    Plastic = db.Column(db.Float)
-    Glass = db.Column(db.Float)
-    Newspaper = db.Column(db.Float)
-    Magazines = db.Column(db.Float)
+    AluminumSteelCans = db.Column(db.Boolean)
+    Plastic = db.Column(db.Boolean)
+    Glass = db.Column(db.Boolean)
+    Newspaper = db.Column(db.Boolean)
+    Magazines = db.Column(db.Boolean)
     MonthYear = db.Column(db.Date)
+    Emissions = db.Column(db.Float)
 
 # DB Relations
 
@@ -270,6 +262,7 @@ def cfc():
     user = Users.query.filter_by(email=email).first()
     print(user)
     print(email)
+    waste_emissions= 3458
     gas_emissions=0
     elect_emissions=0
     oil_emissions=0
@@ -417,37 +410,53 @@ def cfc():
         # adee puth the queries here plis
 
 
-    return render_template('cfc.html',gas_emissions=gas_emissions,elect_emissions=elect_emissions,oil_emissions=oil_emissions,propane_emissions=propane_emissions
-                           ,vehicle_emissions=vehicle_emissions
-                           ,vehicle_emissions_total=vehicle_emissions_total)
 
 
+        aluminium = request.form.get("aluminium")
+        plastic = request.form.get("plastic")
+        glass = request.form.get("glass")
+        newspaper = request.form.get("newspaper")
+        magazines = request.form.get("magazines")
 
-@app.route('/crc')
-def crc():
-    if current_user.is_authenticated:
-        user_id = current_user.UserID
-        hu = aliased(HouseholdUsage)
-        v = aliased(Vehicles)
+        if (aluminium):
+            waste_emissions = waste_emissions - 447
+            aluminium = True
+        else:
+            aluminium = False
+        if (plastic):
+            waste_emissions = waste_emissions - 178
+            plastic = True
+        else:
+            plastic = False
+        if (glass):
+            waste_emissions = waste_emissions - 127
+            glass = True
+        else:
+            glass = False
+        if (newspaper):
+            waste_emissions = waste_emissions - 566
+            newspaper = True
+        else:
+            newspaper = False
+        if (magazines):
+            waste_emissions = waste_emissions - 137
+            magazines = True
+        else:
+            magazines = False
+
+
+        print(magazines, newspaper, glass, plastic, aluminium,"lllllllllllllllllllllllllllllllllll")
 
         
+        waste_order=Waste(UserID=UserId,AluminumSteelCans=aluminium,Plastic=plastic,Glass=glass,Newspaper=newspaper,Magazines=magazines,MonthYear=formatted_date,Emissions=waste_emissions)
+        db.session.add(waste_order)
+        db.session.commit()
 
-        household_query = db.session.query(hu).filter(hu.UserID == user_id).all()
 
-        # Print HouseholdUsage entries
-        print("usage id, propane usage, natural gas usage")
-        for household_usage in household_query:
-            print(household_usage.UsageID, household_usage.PropaneUsage, household_usage.NaturalGasUsage)
-
-        # Query to retrieve Vehicles entries where UserID is the same
-        vehicles_query = db.session.query(v).filter(v.UserID == user_id).all()
-
-        print("vehicle id, number of vehicles, average miles driven")
-        # Print Vehicles entries
-        for vehicle in vehicles_query:
-            print(vehicle.VehicleID, vehicle.NumberOfVehicles, vehicle.AverageMilesDriven)
-    return f"hello {current_user.UserID}"
-   
+    return render_template('cfc.html',gas_emissions=gas_emissions,elect_emissions=elect_emissions,oil_emissions=oil_emissions,propane_emissions=propane_emissions
+                           ,vehicle_emissions=vehicle_emissions
+                           ,vehicle_emissions_total=vehicle_emissions_total
+                           ,waste_emissions=waste_emissions)
     
 @app.route('/contact')
 def contact():
@@ -499,6 +508,31 @@ def vehiclerecord():
             vehicles=[]
 
     return render_template('vehiclerecord.html',usage=total_usage)
+
+
+@app.route('/wasterecord')
+def wasterecord():
+    waste_material=[]
+    total_usage=[]
+    if current_user.is_authenticated:
+        user_id = current_user.UserID
+        w = aliased(Waste)
+
+
+        # Query to retrieve Vehicles entries where UserID is the same
+        waste_query = db.session.query(w).filter(w.UserID == user_id).all()
+        for waste in waste_query:
+            waste_material.append(waste.MonthYear)
+            waste_material.append(waste.AluminumSteelCans)
+            waste_material.append(waste.Plastic)
+            waste_material.append(waste.Glass)
+            waste_material.append(waste.Newspaper)
+            waste_material.append(waste.Magazines)
+            waste_material.append(waste.Emissions)
+            total_usage.append(waste_material)
+            waste_material=[]
+
+    return render_template('wasterecord.html',usage=total_usage)
 # Error Routing
 
 
