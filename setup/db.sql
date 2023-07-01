@@ -21,7 +21,7 @@ CREATE TABLE UserSessions (
     UserID INT,
     LoginTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     LogoutTime TIMESTAMP,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES users(UserID)
 );
 
 CREATE TABLE TwoFactorAuth (
@@ -29,7 +29,7 @@ CREATE TABLE TwoFactorAuth (
     UserID INT,
     OTP VARCHAR(6),
     ExpiryTime TIMESTAMP,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES users(UserID)
 );
 
 CREATE TABLE HouseholdUsage (
@@ -40,7 +40,8 @@ CREATE TABLE HouseholdUsage (
     ElectricityUsage DECIMAL(10,2),
     FuelOilUsage DECIMAL(10,2),
     MonthYear DATE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    Emissions FLOAT,
+    FOREIGN KEY (UserID) REFERENCES users(UserID)
 );
 
 CREATE TABLE Vehicles (
@@ -50,6 +51,7 @@ CREATE TABLE Vehicles (
     AverageMilesDriven DECIMAL(10,2),
     AverageMileage DECIMAL(10,2),
     MonthYear DATE,
+    Emissions FLOAT,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
@@ -59,7 +61,7 @@ CREATE TABLE VehicleDetails (
     MilesDriven DECIMAL(10,2),
     Mileage DECIMAL(10,2),
     MonthYear DATE,
-    FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID)
+    FOREIGN KEY (VehicleID) REFERENCES vehicles(VehicleID)
 );
 
 CREATE TABLE Waste (
@@ -71,5 +73,5 @@ CREATE TABLE Waste (
     Newspaper DECIMAL(10,2),
     Magazines DECIMAL(10,2),
     MonthYear DATE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES users(UserID)
 );

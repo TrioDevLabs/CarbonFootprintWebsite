@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import RegisterationForm
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from sqlalchemy.orm import aliased
 
 # Initialization and Configuration
 
@@ -25,6 +26,7 @@ login_manager.login_message = 'Please login to access this page.'
 
 
 class Users(db.Model, UserMixin):
+    __tablename__ = 'users'
     UserID = db.Column(db.Integer, primary_key=True)
     Username = db.Column(db.String(50), nullable=False, unique=True)
     PasswordHash = db.Column(db.String(255), nullable=False)
@@ -51,49 +53,57 @@ class Users(db.Model, UserMixin):
 
 
 class UserSessions(db.Model):
+    __tablename__ = 'usersessions'
     SessionID = db.Column(db.Integer, primary_key=True)
-    UserID = db.Column(db.Integer, db.ForeignKey('Users.UserID'))
+    UserID = db.Column(db.Integer)
     LoginTime = db.Column(db.DateTime, default=db.func.current_timestamp())
     LogoutTime = db.Column(db.DateTime)
 
 
 class TwoFactorAuth(db.Model):
+    __tablename__ = 'twofactorauth'
     AuthID = db.Column(db.Integer, primary_key=True)
-    UserID = db.Column(db.Integer, db.ForeignKey('Users.UserID'))
+    UserID = db.Column(db.Integer)
     OTP = db.Column(db.String(6))
     ExpiryTime = db.Column(db.DateTime)
 
 
 class HouseholdUsage(db.Model):
+    __tablename__ = 'householdusage'
     UsageID = db.Column(db.Integer, primary_key=True)
-    UserID = db.Column(db.Integer, db.ForeignKey('Users.UserID'))
+    UserID = db.Column(db.Integer )
     PropaneUsage = db.Column(db.Float)
     NaturalGasUsage = db.Column(db.Float)
     ElectricityUsage = db.Column(db.Float)
     FuelOilUsage = db.Column(db.Float)
+    Emissions = db.Column(db.Float)
     MonthYear = db.Column(db.Date)
 
 
 class Vehicles(db.Model):
+    __tablename__ = 'vehicles'
     VehicleID = db.Column(db.Integer, primary_key=True)
-    UserID = db.Column(db.Integer, db.ForeignKey('Users.UserID'))
+    UserID = db.Column(db.Integer)
     NumberOfVehicles = db.Column(db.Integer)
     AverageMilesDriven = db.Column(db.Float)
     AverageMileage = db.Column(db.Float)
+    Emissions = db.Column(db.Float)
     MonthYear = db.Column(db.Date)
 
 
 class VehicleDetails(db.Model):
+    __tablename__ = 'vehiclesdetails'
     VehicleDetailID = db.Column(db.Integer, primary_key=True)
-    VehicleID = db.Column(db.Integer, db.ForeignKey('Vehicles.VehicleID'))
+    VehicleID = db.Column(db.Integer )
     MilesDriven = db.Column(db.Float)
     Mileage = db.Column(db.Float)
     MonthYear = db.Column(db.Date)
 
 
 class Waste(db.Model):
+    __tablename__ = 'waste'
     WasteID = db.Column(db.Integer, primary_key=True)
-    UserID = db.Column(db.Integer, db.ForeignKey('Users.UserID'))
+    UserID = db.Column(db.Integer)
     AluminumSteelCans = db.Column(db.Float)
     Plastic = db.Column(db.Float)
     Glass = db.Column(db.Float)
@@ -104,12 +114,8 @@ class Waste(db.Model):
 # DB Relations
 
 
-sessions = db.relationship('UserSession', backref='Users')
-two_factor_auths = db.relationship('TwoFactorAuth', backref='Users')
-household_usages = db.relationship('HouseholdUsage', backref='Users')
-vehicles = db.relationship('Vehicles', backref='Users')
-vehicledetail = db.relationship('VehicleDetails', backref='Vehicles')
-wastes = db.relationship('Waste', backref='Users')
+
+
 
 # Page Routing
 
@@ -125,6 +131,11 @@ def before_request():
         if user:
             login_user(user)
             current_app.user_loaded = True
+   
+    
+
+
+    
 
 @app.route("/", methods=['GET', 'POST'])
 def home_page():
@@ -252,6 +263,7 @@ def about():
     return render_template('about.html')
 
 @app.route('/cfc', methods=['GET', 'POST'])
+@login_required
 def cfc():
     email = session['email']
     user = Users.query.filter_by(email=email).first()
@@ -264,46 +276,105 @@ def cfc():
     vehicleNum=0
     vehicle_emissions=[0,0,0,0,0,0]
     vehicle_emissions_total=0
+    UserId = current_user.UserID
+    current_date = datetime.now().date()  # Get the current date
+    formatted_date = current_date.strftime('%Y-%m-%d')
     if request.method == 'POST':
         type=request.form.get("type")
         gas=request.form.get("gas")
-        gas=float(gas)
+        if (gas!=""):
+            gas=float(gas)
+        
+        using_gas = False
+        using_electricity = False
+        using_propane = False
+        using_oil = False
         
         gas_type=request.form.get("gas_type")
         if (gas_type=="Thousand Cubic Feet"):
             gas_emissions = (gas * 119.58) * 12
+            using_gas = True
         elif (gas_type=="Therm"):
             gas_emissions = (gas / 11.7) * 12
+            using_gas = True
         elif (gas_type=="Dollars"):
             gas_emissions = (gas / 10.68) * 119.58 * 12
-
+            using_gas = True
         electricity=request.form.get("electricity")
-        electricity=float(electricity)
+        if (electricity!=""):
+            electricity=float(electricity)
         elect_type=request.form.get("elec_type")
         if (elect_type=="kWh"):
             elect_emissions = (electricity * 18.42) + 12
+            using_electricity = True
         elif (elect_type=="Dollars"):
             elect_emissions = (electricity / 0.1188) * 18.42 * 12
+            using_electricity = True
         oil=request.form.get("oil")
-        oil=float(oil)
+        if (oil!=""):
+            oil=float(oil)
         oil_type=request.form.get("oil_type")
         if (oil_type=="Gallons"):
+            using_oil = True
             oil_emissions =  (oil / 4.02) * 22.61 * 12
         elif (oil_type=="Dollars"):
+            using_oil   = True
             oil_emissions = (oil) * 22.61 * 12
 
         propane=request.form.get("propane")
-        propane=float(propane)
+        if (propane!=""):
+            propane=float(propane)
         propane_type=request.form.get("propane_type")
         if (propane_type=="Gallons"):
+            using_propane = True
             propane_emissions =  (propane) * 12.43 * 12
         elif (propane_type=="Dollars"):
+            using_propane = True
             propane_emissions = (propane / 2.47) * 12.43 * 12
 
-
+        
+        if(using_gas or using_propane or  using_electricity or using_oil):
+            if(using_gas):
+                gas = gas
+                gas_emissions = gas_emissions
+            else:
+                gas_emissions = 0
+                gas = 0
+            if(using_electricity):
+                electricity = electricity
+                elect_emissions = elect_emissions
+            else:
+                electricity = 0
+                elect_emissions = 0
+            if(using_oil):
+                oil = oil
+                oil_emissions = oil_emissions
+            else:
+                oil = 0
+                oil_emissions = 0
+            if(using_propane):
+                propane = propane
+                propane_emissions = propane_emissions
+            else:
+                propane = 0
+                propane_emissions = 0
+            total_emissions = gas_emissions + elect_emissions + oil_emissions + propane_emissions
+            HouseOrder =HouseholdUsage(UserID=UserId, PropaneUsage=propane,NaturalGasUsage=gas,ElectricityUsage=electricity,FuelOilUsage=oil,MonthYear=formatted_date,Emissions=total_emissions)
+            db.session.add(HouseOrder)
+            db.session.commit()
+                
+        
+        
         vehicleNum=request.form.get("vehicleNum")
         vehicleNum=int(vehicleNum)  
         vehicle_type=request.form.get("vehicle_type")
+        
+       
+        avg_car_milage = 0
+        avg_car_miles = 0
+        is_vehicles = False
+        if (vehicleNum > 0):
+            is_vehicles = True
 
         for i in range(1,vehicleNum+1):
             milesInput=request.form.get("miles"+str(i))
@@ -312,13 +383,23 @@ def cfc():
             mileageInput=float(mileageInput)
             if (vehicle_type=="Yes"):
                 vehicle_emissions[i] = (milesInput / mileageInput) * 19.6 * 1.01
+
             else:
                 vehicle_emissions[i] = (milesInput /mileageInput) * 19.6 * 1.01
                 vehicle_emissions[i] = vehicle_emissions[i] + vehicle_emissions[i] * (1/10)
+            avg_car_milage = avg_car_milage + mileageInput
+            avg_car_miles = avg_car_miles + milesInput    
         
         for i in range(1,vehicleNum+1):
             vehicle_emissions_total=vehicle_emissions_total+vehicle_emissions[i]
         
+        avg_car_miles = avg_car_miles / vehicleNum
+        avg_car_milage = avg_car_milage / vehicleNum
+        
+        if (is_vehicles):
+            VehicleOrder = Vehicles(UserID=UserId,NumberOfVehicles=vehicleNum,AverageMilesDriven=avg_car_miles,AverageMileage=avg_car_milage,MonthYear=formatted_date,Emissions=vehicle_emissions_total)
+            db.session.add(VehicleOrder)
+            db.session.commit()
 
         # check if user is in a session
         # adee puth the queries here plis
@@ -328,6 +409,34 @@ def cfc():
                            ,vehicle_emissions=vehicle_emissions
                            ,vehicle_emissions_total=vehicle_emissions_total)
 
+
+
+@app.route('/crc')
+def crc():
+    if current_user.is_authenticated:
+        user_id = current_user.UserID
+        hu = aliased(HouseholdUsage)
+        v = aliased(Vehicles)
+
+        
+
+        household_query = db.session.query(hu).filter(hu.UserID == user_id).all()
+
+        # Print HouseholdUsage entries
+        print("usage id, propane usage, natural gas usage")
+        for household_usage in household_query:
+            print(household_usage.UsageID, household_usage.PropaneUsage, household_usage.NaturalGasUsage)
+
+        # Query to retrieve Vehicles entries where UserID is the same
+        vehicles_query = db.session.query(v).filter(v.UserID == user_id).all()
+
+        print("vehicle id, number of vehicles, average miles driven")
+        # Print Vehicles entries
+        for vehicle in vehicles_query:
+            print(vehicle.VehicleID, vehicle.NumberOfVehicles, vehicle.AverageMilesDriven)
+    return f"hello {current_user.UserID}"
+   
+    
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
