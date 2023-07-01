@@ -260,6 +260,7 @@ def logout():
     
 @app.route('/about')
 def about():
+    
     return render_template('about.html')
 
 @app.route('/cfc', methods=['GET', 'POST'])
@@ -294,12 +295,17 @@ def cfc():
         if (gas_type=="Thousand Cubic Feet"):
             gas_emissions = (gas * 119.58) * 12
             using_gas = True
+            # convert gas to therms
+            gas = gas * 10.36
+
         elif (gas_type=="Therm"):
             gas_emissions = (gas / 11.7) * 12
             using_gas = True
         elif (gas_type=="Dollars"):
             gas_emissions = (gas / 10.68) * 119.58 * 12
             using_gas = True
+            # convert gas to therms
+            gas= gas / 0.95
         electricity=request.form.get("electricity")
         if (electricity!=""):
             electricity=float(electricity)
@@ -310,6 +316,8 @@ def cfc():
         elif (elect_type=="Dollars"):
             elect_emissions = (electricity / 0.1188) * 18.42 * 12
             using_electricity = True
+            # convert electricity to kWh
+            electricity = electricity * 7.76
         oil=request.form.get("oil")
         if (oil!=""):
             oil=float(oil)
@@ -320,6 +328,8 @@ def cfc():
         elif (oil_type=="Dollars"):
             using_oil   = True
             oil_emissions = (oil) * 22.61 * 12
+            # convert oil to gallons
+            oil = oil * 0.14
 
         propane=request.form.get("propane")
         if (propane!=""):
@@ -331,6 +341,8 @@ def cfc():
         elif (propane_type=="Dollars"):
             using_propane = True
             propane_emissions = (propane / 2.47) * 12.43 * 12
+            # convert propane to gallons
+            propane = propane *0.37
 
         
         if(using_gas or using_propane or  using_electricity or using_oil):
@@ -441,6 +453,52 @@ def crc():
 def contact():
     return render_template('contact.html')
 
+
+
+@app.route('/homerecord')
+def homerecord():
+    household=[]
+    total_usage=[]
+    if current_user.is_authenticated:
+        user_id = current_user.UserID
+        hu = aliased(HouseholdUsage)
+
+        household_query = db.session.query(hu).filter(hu.UserID == user_id).all()
+        for household_usage in household_query:
+            print(household_usage.UsageID, household_usage.PropaneUsage, household_usage.NaturalGasUsage)
+            household.append(household_usage.MonthYear)
+            household.append(household_usage.PropaneUsage)
+            household.append(household_usage.NaturalGasUsage)
+            household.append(household_usage.ElectricityUsage)
+            household.append(household_usage.FuelOilUsage)
+            household.append(household_usage.Emissions)
+            total_usage.append(household)
+            household=[]
+    return render_template('homerecord.html',usage=total_usage)
+
+
+
+@app.route('/vehiclerecord')
+def vehiclerecord():
+    vehicles=[]
+    total_usage=[]
+    if current_user.is_authenticated:
+        user_id = current_user.UserID
+        v = aliased(Vehicles)
+
+
+        # Query to retrieve Vehicles entries where UserID is the same
+        vehicles_query = db.session.query(v).filter(v.UserID == user_id).all()
+        for vehicle in vehicles_query:
+            vehicles.append(vehicle.MonthYear)
+            vehicles.append(vehicle.NumberOfVehicles)
+            vehicles.append(vehicle.AverageMilesDriven)
+            vehicles.append(vehicle.AverageMileage)
+            vehicles.append(vehicle.Emissions)
+            total_usage.append(vehicles)
+            vehicles=[]
+
+    return render_template('vehiclerecord.html',usage=total_usage)
 # Error Routing
 
 
