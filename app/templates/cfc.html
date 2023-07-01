@@ -24,7 +24,7 @@
                 <h3>CARBON FOOTPRINT CALCULATOR</h3>
                 <p>Carbon Footprint Calculator For Individuals And Households</p>
             </div>
-            <form class="form-register" action="#" method="post">
+            <form class="form-register" action="cfc" method="post">
                 <div id="form-total">
                     <!-- SECTION 1 -->
                     <h2>Home Energy</h2>
@@ -66,28 +66,28 @@
                                         <div class="form-holder">
                                             <div class="card card-body">
                                                 Natural Gas
-                                                <input type="number" name="" id="">
-                                                <select name="type" id="type" class="form-control">
+                                                <input type="number" name="gas" id="gas">
+                                                <select name="gas_type" id="gas_type" class="form-control">
                                                     <option value="Thousand Cubic Feet" selected>Thousand Cubic Feet
                                                     </option>
                                                     <option value="Therm">Therm</option>
                                                     <option value="Dollars">Dollars</option>
                                                 </select>
                                                 <div class="output">
-                                                    0 lbs
+                                                    {{gas_emissions}} lbs
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-holder">
                                             <div class="card card-body">
                                                 Electricity
-                                                <input type="number" name="" id="">
-                                                <select name="type" id="type" class="form-control">
+                                                <input type="number" name="electricity" id="electricity">
+                                                <select name="elec_type" id="elec_type" class="form-control">
                                                     <option value="kWh">kWh</option>
                                                     <option value="Dollars">Dollars</option>
                                                 </select>
                                                 <div class="output">
-                                                    0 lbs
+                                                    {{elect_emissions}} lbs
                                                 </div>
                                             </div>
                                         </div>
@@ -96,26 +96,26 @@
                                         <div class="form-holder">
                                             <div class="card card-body">
                                                 Fuel Oil
-                                                <input type="number" name="" id="">
-                                                <select name="type" id="type" class="form-control">
+                                                <input type="number" name="oil" id="oil">
+                                                <select name="oil_type" id="oil_type" class="form-control">
                                                     <option value="Gallons">Gallons</option>
                                                     <option value="Dollars">Dollars</option>
                                                 </select>
                                                 <div class="output">
-                                                    0 lbs
+                                                    {{oil_emissions}} lbs
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-holder">
                                             <div class="card card-body">
                                                 Propane
-                                                <input type="number" name="" id="">
-                                                <select name="type" id="type" class="form-control">
+                                                <input type="number" name="propane" id="propane">
+                                                <select name="propane_type" id="propane_type" class="form-control">
                                                     <option value="Gallons">Gallons</option>
                                                     <option value="Dollars">Dollars</option>
                                                 </select>
                                                 <div class="output">
-                                                    0 lbs
+                                                    {{propane_emissions}} lbs
                                                 </div>
                                             </div>
                                         </div>
@@ -177,7 +177,7 @@
                                             </div>
                                         </div>
                                         <div class="form-holder">
-                                            <select name="type" id="type" class="form-control">
+                                            <select name="vehicle_type" id="vehicle_type" class="form-control">
                                                 <option value="Choose One" disabled selected>Choose One</option>
                                                 <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
@@ -278,7 +278,12 @@
                             </div>
                         </div>
                     </section>
+                    <!-- create submit button -->
+                        <div class="form-holder">
+                            <button class="btn btn-primary headerbtn" type="submit">Submit</button>
+                        </div>
                 </div>
+
             </form>
         </div>
         <div class="total">
@@ -286,9 +291,9 @@
             <p>Annual CO2 emissions (lbs.) </p>
             <hr>
             <h4>Your Current Total:</h4>
-            <h4 class="amount">18,542</h4>
-            <h4>New Total After Your Planned Actions:</h4>
-            <h4 class="amount">18,542</h4>
+            <h4 class="amount">{{gas_emissions+elect_emissions+oil_emissions+propane_emissions}}</h4>
+            <h4>Vehicles Total</h4>
+            <h4 class="amount">{{vehicle_emissions_total}}</h4>
             <h4>U.S. Average*:</h4>
             <h4 class="amount">26,793</h4>
         </div>

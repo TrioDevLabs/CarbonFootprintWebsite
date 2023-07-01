@@ -1,5 +1,6 @@
 from datetime import datetime
 import secrets
+import cryptography
 from flask import Flask, flash, render_template, request, redirect, url_for, session, current_app
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
@@ -188,6 +189,7 @@ def confirm_email():
     user = Users.query.filter_by(email=email).first()
     if request.method == 'POST':
         security_code = request.form.get('1') + request.form.get('2') + request.form.get('3') + request.form.get('4') + request.form.get('5') +request.form.get('6')
+        print(security_code,"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
         if user and user.SecurityCode == security_code:
             db.session.commit()
             user.Confirmed = True
@@ -249,9 +251,82 @@ def logout():
 def about():
     return render_template('about.html')
 
-@app.route('/cfc')
+@app.route('/cfc', methods=['GET', 'POST'])
 def cfc():
-    return render_template('cfc.html')
+    email = session['email']
+    user = Users.query.filter_by(email=email).first()
+    print(user)
+    print(email)
+    gas_emissions=0
+    elect_emissions=0
+    oil_emissions=0
+    propane_emissions=0
+    vehicleNum=0
+    vehicle_emissions=[0,0,0,0,0,0]
+    vehicle_emissions_total=0
+    if request.method == 'POST':
+        type=request.form.get("type")
+        gas=request.form.get("gas")
+        gas=float(gas)
+        
+        gas_type=request.form.get("gas_type")
+        if (gas_type=="Thousand Cubic Feet"):
+            gas_emissions = (gas * 119.58) * 12
+        elif (gas_type=="Therm"):
+            gas_emissions = (gas / 11.7) * 12
+        elif (gas_type=="Dollars"):
+            gas_emissions = (gas / 10.68) * 119.58 * 12
+
+        electricity=request.form.get("electricity")
+        electricity=float(electricity)
+        elect_type=request.form.get("elec_type")
+        if (elect_type=="kWh"):
+            elect_emissions = (electricity * 18.42) + 12
+        elif (elect_type=="Dollars"):
+            elect_emissions = (electricity / 0.1188) * 18.42 * 12
+        oil=request.form.get("oil")
+        oil=float(oil)
+        oil_type=request.form.get("oil_type")
+        if (oil_type=="Gallons"):
+            oil_emissions =  (oil / 4.02) * 22.61 * 12
+        elif (oil_type=="Dollars"):
+            oil_emissions = (oil) * 22.61 * 12
+
+        propane=request.form.get("propane")
+        propane=float(propane)
+        propane_type=request.form.get("propane_type")
+        if (propane_type=="Gallons"):
+            propane_emissions =  (propane) * 12.43 * 12
+        elif (propane_type=="Dollars"):
+            propane_emissions = (propane / 2.47) * 12.43 * 12
+
+
+        vehicleNum=request.form.get("vehicleNum")
+        vehicleNum=int(vehicleNum)  
+        vehicle_type=request.form.get("vehicle_type")
+
+        for i in range(1,vehicleNum+1):
+            milesInput=request.form.get("miles"+str(i))
+            milesInput=float(milesInput)
+            mileageInput=request.form.get("mileage"+str(i))
+            mileageInput=float(mileageInput)
+            if (vehicle_type=="Yes"):
+                vehicle_emissions[i] = (milesInput / mileageInput) * 19.6 * 1.01
+            else:
+                vehicle_emissions[i] = (milesInput /mileageInput) * 19.6 * 1.01
+                vehicle_emissions[i] = vehicle_emissions[i] + vehicle_emissions[i] * (1/10)
+        
+        for i in range(1,vehicleNum+1):
+            vehicle_emissions_total=vehicle_emissions_total+vehicle_emissions[i]
+        
+
+        # check if user is in a session
+        # adee puth the queries here plis
+
+
+    return render_template('cfc.html',gas_emissions=gas_emissions,elect_emissions=elect_emissions,oil_emissions=oil_emissions,propane_emissions=propane_emissions
+                           ,vehicle_emissions=vehicle_emissions
+                           ,vehicle_emissions_total=vehicle_emissions_total)
 
 @app.route('/contact')
 def contact():
