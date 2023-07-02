@@ -1,1 +1,39 @@
 {% extends './layouts/base.html'%}
+{% block title %}About{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+<link rel="stylesheet" href="../static/css/index.css">
+<style>
+    .main {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .t {
+        padding-top: 30px;
+        margin-bottom: -20px;
+        text-align: center;
+        font-size: 36px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .i {
+        width: 100%;
+        max-width: 1200px;
+        margin-top: -20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="main">
+    <h1 class="t">Carbon Emission Footprint</h1>
+    <img class="i" src="../static/images/homeDrop.png" alt="">
+</div>
+{% endblock %}

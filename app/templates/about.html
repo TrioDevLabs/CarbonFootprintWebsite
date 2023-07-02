@@ -3,8 +3,22 @@
 
 {% block head %}
 {{ super() }}
+<link rel="stylesheet" href="../static/css/about.css">
 {% endblock %}
 
 {% block content %}
-
+<div class="company">
+    <div class="img">
+        <img src="../static/images/logo.svg" alt="" />
+    </div>
+    <div class="company-info">
+        <span>HEALTHY ENVIRONMENT <span class="our">FOR EVERYONE</span></span>
+        <p>
+            <b>Carbon Emission FOOTPRINT</b> offers a carbon footprint calculator, allowing users to input their daily
+            activities, such as transportation, energy consumption, and lifestyle choices, to estimate their carbon
+            emissions. This calculator helps individuals understand the environmental impact of their actions and
+            identify areas where they can make changes to reduce their carbon footprint.
+        </p>
+    </div>
+</div>
 {% endblock %}

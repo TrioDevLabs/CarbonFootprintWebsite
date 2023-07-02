@@ -1,0 +1,38 @@
+.company {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .company-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .img {
+    width: 80%;
+    margin: 1rem 0rem 0rem 2rem;
+  }
+  
+  .img img {
+    width: 100%;
+  }
+  
+  .company-info {
+    width: 100%;
+    margin-right: 4rem;
+  }
+  
+  .company-info span {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .company-info span .our {
+    color: #9DC08B;
+  }
+  
+  .company-info p{
+    font-size: 1.1rem;
+  }

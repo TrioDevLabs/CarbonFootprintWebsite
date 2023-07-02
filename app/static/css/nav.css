@@ -14,7 +14,13 @@
 /* ----- User Nav Dropdown -----*/
 
 .bg-custom-1 {
-    background-color: #85144b;
+    background-color: #40513B;
+}
+
+.nav-item>a,
+.navbar-brand>.row>*,
+.nav-item>a {
+    color: #EDF1D6 !important;
 }
 
 .bg-custom-2 {
@@ -29,4 +35,13 @@
 .navbar-nav>li>.exclude {
     align-self: center;
     min-width: 100px;
+}
+
+.btn-outline-primary {
+    border-color: #EDF1D6 !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #EDF1D6 !important;
+    color: #40513B !important;
 }

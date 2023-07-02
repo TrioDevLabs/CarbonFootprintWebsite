@@ -8,27 +8,63 @@
 {% block content %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Contact Form</title>
+    <link rel="stylesheet" href="../static/css/contact.css">
 </head>
+
 <body>
-    <div style="margin-top: 100px;">
-        <h1>Contact Us</h1>
+    <div style="margin-top: 200px;">
+        <form action="/contact" method="POST">
+            <div class="container">
+                <div class="screen">
+                    <div class="screen-header">
+                        <div class="screen-header-left">
+                            <div class="screen-header-button close"></div>
+                            <div class="screen-header-button maximize"></div>
+                            <div class="screen-header-button minimize"></div>
+                        </div>
+                        <div class="screen-header-right">
+                            <div class="screen-header-ellipsis"></div>
+                            <div class="screen-header-ellipsis"></div>
+                            <div class="screen-header-ellipsis"></div>
+                        </div>
+                    </div>
+                    <div class="screen-body">
+                        <div class="screen-body-item left">
+                            <div class="app-title">
+                                <span>CONTACT</span>
+                                <span>US</span>
+                            </div>
+                        </div>
+                        <div class="screen-body-item">
+                            <div class="app-form">
+                                <div class="app-form-group">
+                                    <input class="app-form-control" placeholder="NAME">
+                                </div>
+                                <div class="app-form-group">
+                                    <input class="app-form-control" placeholder="EMAIL">
+                                </div>
+                                <div class="app-form-group">
+                                    <input class="app-form-control" placeholder="CONTACT NO">
+                                </div>
+                                <div class="app-form-group message">
+                                    <input class="app-form-control" placeholder="MESSAGE">
+                                </div>
+                                <div class="app-form-group buttons">
+                                    <button type="submit" class="app-form-button">SEND</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <form action="#" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required><br><br>
-
-            <label for="contact">Contact Number:</label>
-            <input type="text" id="contact" name="contact" required><br><br>
-
-            <label for="message">Message:</label><br>
-            <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
-
-            <input type="submit" value="Submit">
         </form>
     </div>
 </body>
+
 </html>
 
 {% endblock %}

@@ -147,7 +147,7 @@ body {
 .form-register .steps li.done a::before,
 .form-register .steps li.done a,
 .form-register .steps li.done a:active  {
-    background: #56a3f2;
+    background: #9DC08B;
 }
 .form-register .steps li .current-info {
 	display: none;
@@ -327,7 +327,8 @@ body {
     margin-top: 15px;
 }
 .actions ul li.disabled,
-.actions ul li:first-child {
+.actions ul li:first-child,
+.actions ul li:nth-last-child(2) {
 	display: none;
 }
 .actions ul li {
@@ -351,14 +352,14 @@ body {
     -moz-align-items: center;
     -webkit-align-items: center;
     align-items: center;
-    background: #56a3f2;
+    background: #9DC08B;
     font-family: 'Muli', sans-serif;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
 }
 .actions ul li:hover {
-	background: #4582bf;
+	background: #609966;
 }
 .actions ul li a {
 	color: #fff;
@@ -366,7 +367,9 @@ body {
     padding: 15px 42px;
 }
 
-
+#form-total .actions > ul {
+	display: none;
+  }
 /* Responsive */
 @media screen and (max-width: 1199px) {
 	.wizard-v2-content {
@@ -429,4 +432,11 @@ body {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	text-align: left !important;
+	background-color: #40513B !important;
+	border-color: #40513B !important;
+}
+
+.btn-primary {
+	background-color: #40513B !important;
+	border-color: #40513B !important;
 }

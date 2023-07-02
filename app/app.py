@@ -1,6 +1,5 @@
 from datetime import datetime
 import secrets
-import cryptography
 from flask import Flask, flash, render_template, request, redirect, url_for, session, current_app
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
@@ -255,7 +254,8 @@ def about():
     
     return render_template('about.html')
 
-@app.route('/cfc', methods=['GET', 'POST'])
+@app.route('/cfc#finish', methods=['POST','GET'])
+@app.route('/cfc', methods=['POST','GET'])
 @login_required
 def cfc():
     email = session['email']
@@ -304,7 +304,7 @@ def cfc():
             electricity=float(electricity)
         elect_type=request.form.get("elec_type")
         if (elect_type=="kWh"):
-            elect_emissions = (electricity * 18.42) + 12
+            elect_emissions = (electricity * 18.42) * 12
             using_electricity = True
         elif (elect_type=="Dollars"):
             elect_emissions = (electricity / 0.1188) * 18.42 * 12
@@ -315,10 +315,10 @@ def cfc():
         if (oil!=""):
             oil=float(oil)
         oil_type=request.form.get("oil_type")
-        if (oil_type=="Gallons"):
+        if (oil_type=="Dollars"):
             using_oil = True
             oil_emissions =  (oil / 4.02) * 22.61 * 12
-        elif (oil_type=="Dollars"):
+        elif (oil_type=="Gallons"):
             using_oil   = True
             oil_emissions = (oil) * 22.61 * 12
             # convert oil to gallons
@@ -458,7 +458,7 @@ def cfc():
                            ,vehicle_emissions_total=vehicle_emissions_total
                            ,waste_emissions=waste_emissions)
     
-@app.route('/contact')
+@app.route('/contact', methods=['POST', 'GET'])
 def contact():
     return render_template('contact.html')
 
