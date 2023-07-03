@@ -1,8 +1,10 @@
 from datetime import datetime
 import secrets
+from sys import exc_info
 from flask import Flask, flash, render_template, request, redirect, url_for, session, current_app
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
+import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import RegisterationForm
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -122,11 +124,6 @@ def before_request():
         if user:
             login_user(user)
             current_app.user_loaded = True
-   
-    
-
-
-    
 
 @app.route("/", methods=['GET', 'POST'])
 def home_page():
@@ -169,10 +166,17 @@ def register():
                 user = Users(Username=username,
                              email=email_address, PasswordHash=password, CreatedAt=timestamp, Confirmed=False)
                 db.session.add(user)
-                db.session.commit()
-                session['newRegistrationEmail'] = email_address
+                try:
+                    db.session.commit()
+                    session['newRegistrationEmail'] = email_address
+                    return redirect(url_for('confirm_email'))
+                except pymysql.err.IntegrityError as e:
+                    db.session.rollback()
+                except Exception as e:
+                    db.session.rollback()
                 
-                return redirect(url_for('confirm_email'))
+                flash("User Already exists!", category='danger')
+
             else:
                 flash('Passwords do not match', category='danger')
 
