@@ -1,4 +1,6 @@
 # CarbonFootprintWebsite
+This project enables users to calculate their **carbon impact** based on the consumption of various utilities such as electricity, water, and fuel. It provides insights into environmental impact and potential ways to reduce carbon emissions.  
+
 ## Setting Up The Program
 First run
 ```
